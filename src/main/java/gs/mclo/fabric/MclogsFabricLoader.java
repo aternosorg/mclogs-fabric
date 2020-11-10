@@ -28,11 +28,11 @@ public class MclogsFabricLoader implements ModInitializer {
             APIResponse response = MclogsAPI.share(logpath);
             if (response.success) {
                 LiteralText feedback = new LiteralText("Your log has been uploaded: ");
-                feedback.setStyle(Style.EMPTY.withColor(Formatting.GREEN));
+                feedback.setStyle(new Style().setColor(Formatting.GREEN));
 
                 LiteralText link = new LiteralText(response.url);
-                Style linkStyle = Style.EMPTY.withColor(Formatting.BLUE);
-                linkStyle = linkStyle.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,response.url));
+                Style linkStyle = new Style().setColor(Formatting.BLUE);
+                linkStyle = linkStyle.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,response.url));
                 link.setStyle(linkStyle);
 
                 source.sendFeedback(feedback.append(link),true);

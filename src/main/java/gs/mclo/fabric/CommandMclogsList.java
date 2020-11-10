@@ -26,7 +26,7 @@ public class CommandMclogsList {
 
                         LiteralText feedback = new LiteralText("Available Logs:");
                         for (String log : logs) {
-                            Style s = Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/mclogs share " + log));
+                            Style s = new Style().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/mclogs share " + log));
                             LiteralText tempText = new LiteralText("\n" + log);
                             tempText.setStyle(s);
                             feedback.append(tempText);
