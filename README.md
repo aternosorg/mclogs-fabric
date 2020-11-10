@@ -1,5 +1,5 @@
 # mclogs-fabric
-A dabric mod to easily share and analyse your server logs with [mclo.gs](https://mclo.gs)
+A fabric mod to easily share and analyse your server logs with [mclo.gs](https://mclo.gs)
 
 ### commands:
     /mclogs
