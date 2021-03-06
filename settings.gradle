@@ -8,3 +8,7 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
+rootProject.name = 'mclogs-fabric'
+include ':mclogs-java'
+project(':mclogs-java').projectDir = new File('./mclogs-java/')
