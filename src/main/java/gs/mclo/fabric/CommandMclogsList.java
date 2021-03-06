@@ -1,7 +1,7 @@
 package gs.mclo.fabric;
 
 import com.mojang.brigadier.CommandDispatcher;
-import gs.mclo.mclogs.MclogsAPI;
+import gs.mclo.java.MclogsAPI;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.LiteralText;
