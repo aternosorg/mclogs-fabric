@@ -3,6 +3,7 @@ plugins {
 	id 'application'
 	id 'fabric-loom' version '0.4-SNAPSHOT'
 	id 'maven-publish'
+	id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -45,35 +46,17 @@ tasks.withType(JavaCompile) {
 	options.encoding = "UTF-8"
 }
 
-// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-// if it is present.
-// If you remove this task, sources will not be generated.
-task sourcesJar(type: Jar, dependsOn: classes) {
-	classifier = "sources"
-	from sourceSets.main.allSource
-}
-
 jar {
 	from "LICENSE"
 }
 
-// configure the maven publication
-publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			// add all the jars that should be included when publishing to maven
-			artifact(remapJar) {
-				builtBy remapJar
-			}
-			artifact(sourcesJar) {
-				builtBy remapSourcesJar
-			}
-		}
-	}
+application {
+	mainClassName = 'gs.mclo.bukkit.MclogsBukkitLoader'
+}
 
-	// select the repositories you want to publish to
-	repositories {
-		// uncomment to publish to the local maven
-		// mavenLocal()
-	}
+shadowJar {
+	from sourceSets.main.allSource
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+	configurations = [project.configurations.compile]
+	archiveFileName = "mclogs-fabric-${project.mod_version}-for-${project.mod_minecraft_version}.jar"
 }
