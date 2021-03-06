@@ -1,7 +1,7 @@
 package gs.mclo.fabric;
 
-import gs.mclo.mclogs.APIResponse;
-import gs.mclo.mclogs.MclogsAPI;
+import gs.mclo.java.APIResponse;
+import gs.mclo.java.MclogsAPI;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;

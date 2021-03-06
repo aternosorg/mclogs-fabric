@@ -13,3 +13,8 @@ List all available log files
 Share a specific log file
 
 All commands require the permission level 2
+
+### Developing
+This mod uses the [mclogs-java](https://github.com/aternosorg/mclogs-java) library.
+You need to run the following command to add it to the project:
+`git submodule init && git submodule update`
