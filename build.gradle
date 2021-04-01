@@ -3,7 +3,6 @@ plugins {
 	id 'application'
 	id 'fabric-loom' version '0.6-SNAPSHOT'
 	id 'maven-publish'
-	id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -21,6 +20,7 @@ dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	include project(path: ":mclogs-java", configuration: 'default')
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
@@ -52,11 +52,4 @@ jar {
 
 application {
 	mainClassName = 'gs.mclo.bukkit.MclogsBukkitLoader'
-}
-
-shadowJar {
-	from sourceSets.main.allSource
-	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-	configurations = [project.configurations.compile]
-	archiveFileName = "mclogs-fabric-${project.mod_version}-for-${project.mod_minecraft_version}.jar"
 }
