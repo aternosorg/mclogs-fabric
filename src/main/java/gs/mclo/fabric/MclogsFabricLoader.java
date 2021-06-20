@@ -1,5 +1,6 @@
 package gs.mclo.fabric;
 
+import com.mojang.brigadier.context.CommandContext;
 import gs.mclo.java.APIResponse;
 import gs.mclo.java.MclogsAPI;
 import net.fabricmc.api.DedicatedServerModInitializer;
@@ -21,6 +22,15 @@ import java.util.Optional;
 
 public class MclogsFabricLoader implements DedicatedServerModInitializer {
     public static final Logger logger = LogManager.getLogger();
+
+    /**
+     * @param context command context
+     * @return log files
+     * @throws IOException io exception
+     */
+    public static String[] getLogs(CommandContext<ServerCommandSource> context) throws IOException {
+        return MclogsAPI.listLogs(context.getSource().getMinecraftServer().getRunDirectory().getCanonicalPath());
+    }
 
     public static int share(ServerCommandSource source, String filename) {
         MclogsAPI.mcversion = source.getMinecraftServer().getVersion();

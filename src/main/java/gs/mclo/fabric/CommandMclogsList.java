@@ -1,7 +1,6 @@
 package gs.mclo.fabric;
 
 import com.mojang.brigadier.CommandDispatcher;
-import gs.mclo.java.MclogsAPI;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.LiteralText;
@@ -17,7 +16,7 @@ public class CommandMclogsList {
                     ServerCommandSource source = context.getSource();
 
                     try {
-                        String[] logs = MclogsAPI.listLogs(context.getSource().getMinecraftServer().getRunDirectory().getCanonicalPath());
+                        String[] logs = MclogsFabricLoader.getLogs(context);
 
                         if (logs.length == 0) {
                             source.sendFeedback(new LiteralText("No logs available!"), false);
