@@ -1,10 +1,12 @@
 package gs.mclo.fabric;
 
+import com.mojang.brigadier.context.CommandContext;
 import gs.mclo.java.APIResponse;
 import gs.mclo.java.MclogsAPI;
-import net.fabricmc.api.ModInitializer;
+import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.LiteralText;
@@ -16,13 +18,23 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Optional;
 
-public class MclogsFabricLoader implements ModInitializer {
+public class MclogsFabricLoader implements DedicatedServerModInitializer {
     public static final Logger logger = LogManager.getLogger();
 
+    /**
+     * @param context command context
+     * @return log files
+     * @throws IOException io exception
+     */
+    public static String[] getLogs(CommandContext<ServerCommandSource> context) throws IOException {
+        return MclogsAPI.listLogs(context.getSource().getMinecraftServer().getRunDirectory().getCanonicalPath());
+    }
+
     public static int share(ServerCommandSource source, String filename) {
-        logger.log(Level.INFO,"Sharing "+filename);
         MclogsAPI.mcversion = source.getMinecraftServer().getVersion();
+        logger.log(Level.INFO,"Sharing "+filename);
         try {
             String logpath = source.getMinecraftServer().getFile("logs/"+filename).getCanonicalPath();
             APIResponse response = MclogsAPI.share(logpath);
@@ -60,10 +72,10 @@ public class MclogsFabricLoader implements ModInitializer {
     }
 
     @Override
-    public void onInitialize() {
+    public void onInitializeServer() {
         MclogsAPI.userAgent = "Mclogs-fabric";
-        MclogsAPI.version = FabricLoader.getInstance().getModContainer("mclogs").get().getMetadata().getVersion().getFriendlyString();
-        MclogsAPI.mcversion = "1.16.3";
+        Optional<ModContainer> mclogs = FabricLoader.getInstance().getModContainer("mclogs");
+        MclogsAPI.version = mclogs.isPresent() ? mclogs.get().getMetadata().getVersion().getFriendlyString() : "unknown";
 
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
             CommandMclogs.register(dispatcher);
