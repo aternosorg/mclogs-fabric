@@ -22,7 +22,7 @@
 
   "environment": "server",
   "entrypoints": {
-    "main": [
+    "server": [
       "gs.mclo.fabric.MclogsFabricLoader"
     ]
   },
