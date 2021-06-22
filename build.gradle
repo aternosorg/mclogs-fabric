@@ -1,15 +1,13 @@
 plugins {
 	id 'java'
-	id 'application'
 	id 'fabric-loom' version '0.6-SNAPSHOT'
-	id 'maven-publish'
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 archivesBaseName = project.archives_base_name
-version = project.mod_version
+version = "${project.mod_version}-for-${project.mod_minecraft_version}"
 group = project.maven_group
 
 dependencies {
@@ -43,8 +41,4 @@ tasks.withType(JavaCompile) {
 
 jar {
 	from "LICENSE"
-}
-
-application {
-	mainClassName = 'gs.mclo.bukkit.MclogsBukkitLoader'
 }
