@@ -35,9 +35,10 @@ public class MclogsFabricLoader implements DedicatedServerModInitializer {
     public static int share(ServerCommandSource source, String filename) {
         MclogsAPI.mcversion = source.getMinecraftServer().getVersion();
         logger.log(Level.INFO,"Sharing "+filename);
+        source.sendFeedback(new LiteralText("Sharing " + filename), false);
         try {
-            String logpath = source.getMinecraftServer().getFile("logs/"+filename).getCanonicalPath();
-            APIResponse response = MclogsAPI.share(logpath);
+            String logs = source.getMinecraftServer().getFile("logs/").getCanonicalPath();
+            APIResponse response = MclogsAPI.share(logs, filename);
             if (response.success) {
                 LiteralText feedback = new LiteralText("Your log has been uploaded: ");
                 feedback.setStyle(Style.EMPTY.withColor(Formatting.GREEN));

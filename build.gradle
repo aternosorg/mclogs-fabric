@@ -1,15 +1,19 @@
 plugins {
 	id 'java'
+<<<<<<< HEAD
 	id 'application'
 	id 'fabric-loom' version '0.8-SNAPSHOT'
 	id 'maven-publish'
+=======
+	id 'fabric-loom' version '0.6-SNAPSHOT'
+>>>>>>> master
 }
 
 sourceCompatibility = JavaVersion.VERSION_16
 targetCompatibility = JavaVersion.VERSION_16
 
 archivesBaseName = project.archives_base_name
-version = project.mod_version
+version = "${project.mod_version}-for-${project.mod_minecraft_version}"
 group = project.maven_group
 
 dependencies {
@@ -44,4 +48,8 @@ tasks.withType(JavaCompile) {
 
 jar {
 	from "LICENSE"
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> master
