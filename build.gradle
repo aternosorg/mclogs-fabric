@@ -1,8 +1,6 @@
 plugins {
 	id 'java'
-	id 'application'
 	id 'fabric-loom' version '0.6-SNAPSHOT'
-	id 'maven-publish'
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -43,8 +41,4 @@ tasks.withType(JavaCompile) {
 
 jar {
 	from "LICENSE"
-}
-
-application {
-	mainClassName = 'gs.mclo.bukkit.MclogsBukkitLoader'
 }
