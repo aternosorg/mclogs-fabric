@@ -42,8 +42,4 @@ tasks.withType(JavaCompile) {
 
 jar {
 	from "LICENSE"
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> master
