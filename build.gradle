@@ -1,20 +1,18 @@
 plugins {
 	id 'java'
-	id 'application'
 	id 'fabric-loom' version '0.6-SNAPSHOT'
-	id 'maven-publish'
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 archivesBaseName = project.archives_base_name
-version = project.mod_version
+version = "${project.mod_version}-for-${project.mod_minecraft_version}"
 group = project.maven_group
 
 dependencies {
 	// Mclogs Java - Library to read, list and share logs to mclogs
-	compile project(path: ":mclogs-java", configuration: 'default')
+	implementation project(path: ":mclogs-java", configuration: 'default')
 
 	//to change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -29,13 +27,8 @@ dependencies {
 processResources {
 	inputs.property "version", project.version
 
-	from(sourceSets.main.resources.srcDirs) {
-		include "fabric.mod.json"
+	filesMatching("fabric.mod.json") {
 		expand "version": project.version
-	}
-
-	from(sourceSets.main.resources.srcDirs) {
-		exclude "fabric.mod.json"
 	}
 }
 
@@ -48,8 +41,4 @@ tasks.withType(JavaCompile) {
 
 jar {
 	from "LICENSE"
-}
-
-application {
-	mainClassName = 'gs.mclo.bukkit.MclogsBukkitLoader'
 }
