@@ -18,6 +18,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 public class MclogsFabricLoader implements DedicatedServerModInitializer {
@@ -37,8 +39,12 @@ public class MclogsFabricLoader implements DedicatedServerModInitializer {
         logger.log(Level.INFO,"Sharing "+filename);
         source.sendFeedback(new LiteralText("Sharing " + filename), false);
         try {
-            String logs = source.getMinecraftServer().getFile("logs/").getCanonicalPath();
-            APIResponse response = MclogsAPI.share(logs, filename);
+            Path logs = source.getMinecraftServer().getFile("logs/").toPath();
+            Path log = logs.resolve(filename);
+            if (!log.getParent().equals(logs)) {
+                throw new FileNotFoundException();
+            }
+            APIResponse response = MclogsAPI.share(log);
             if (response.success) {
                 LiteralText feedback = new LiteralText("Your log has been uploaded: ");
                 feedback.setStyle(Style.EMPTY.withColor(Formatting.GREEN));
@@ -59,7 +65,7 @@ public class MclogsFabricLoader implements DedicatedServerModInitializer {
                 return 0;
             }
         }
-        catch (FileNotFoundException e) {
+        catch (FileNotFoundException|IllegalArgumentException e) {
             LiteralText error = new LiteralText("The log file "+filename+" doesn't exist. Use '/mclogs list' to list all logs.");
             source.sendError(error);
             return -1;
