@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Optional;
 
 public class MclogsFabricLoader implements DedicatedServerModInitializer {
@@ -31,7 +32,9 @@ public class MclogsFabricLoader implements DedicatedServerModInitializer {
      * @throws IOException io exception
      */
     public static String[] getLogs(CommandContext<ServerCommandSource> context) throws IOException {
-        return MclogsAPI.listLogs(context.getSource().getServer().getRunDirectory().getCanonicalPath());
+        String[] logs = MclogsAPI.listLogs(context.getSource().getServer().getRunDirectory().getCanonicalPath());
+        Arrays.sort(logs);
+        return logs;
     }
 
     public static int share(ServerCommandSource source, String filename) {
