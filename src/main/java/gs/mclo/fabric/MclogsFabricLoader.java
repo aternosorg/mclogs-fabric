@@ -8,9 +8,7 @@ import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Style;
+import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -37,7 +35,7 @@ public class MclogsFabricLoader implements DedicatedServerModInitializer {
     public static int share(ServerCommandSource source, String filename) {
         MclogsAPI.mcversion = source.getServer().getVersion();
         logger.log(Level.INFO,"Sharing "+filename);
-        source.sendFeedback(new LiteralText("Sharing " + filename), false);
+        source.sendFeedback(Text.literal("Sharing " + filename), false);
         try {
             Path logs = source.getServer().getFile("logs/").toPath();
             Path log = logs.resolve(filename);
@@ -46,10 +44,10 @@ public class MclogsFabricLoader implements DedicatedServerModInitializer {
             }
             APIResponse response = MclogsAPI.share(log);
             if (response.success) {
-                LiteralText feedback = new LiteralText("Your log has been uploaded: ");
+                MutableText feedback = Text.literal("Your log has been uploaded: ");
                 feedback.setStyle(Style.EMPTY.withColor(Formatting.GREEN));
 
-                LiteralText link = new LiteralText(response.url);
+                MutableText link = Text.literal(response.url);
                 Style linkStyle = Style.EMPTY.withColor(Formatting.BLUE);
                 linkStyle = linkStyle.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,response.url));
                 link.setStyle(linkStyle);
@@ -60,18 +58,16 @@ public class MclogsFabricLoader implements DedicatedServerModInitializer {
             else {
                 logger.error("An error occurred when uploading your log: ");
                 logger.error(response.error);
-                LiteralText error = new LiteralText("An error occurred. Check your log for more details");
-                source.sendError(error);
+                source.sendError(Text.literal("An error occurred. Check your log for more details"));
                 return 0;
             }
         }
         catch (FileNotFoundException|IllegalArgumentException e) {
-            LiteralText error = new LiteralText("The log file "+filename+" doesn't exist. Use '/mclogs list' to list all logs.");
-            source.sendError(error);
+            source.sendError(Text.literal("The log file "+filename+" doesn't exist. Use '/mclogs list' to list all logs."));
             return -1;
         }
         catch (IOException e) {
-            source.sendError(new LiteralText("An error occurred. Check your log for more details"));
+            source.sendError(Text.literal("An error occurred. Check your log for more details"));
             logger.error("Could not get log file!");
             logger.error(e);
             return 0;

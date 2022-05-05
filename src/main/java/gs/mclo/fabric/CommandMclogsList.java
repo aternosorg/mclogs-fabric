@@ -2,9 +2,7 @@ package gs.mclo.fabric;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Style;
+import net.minecraft.text.*;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
@@ -19,14 +17,14 @@ public class CommandMclogsList {
                         String[] logs = MclogsFabricLoader.getLogs(context);
 
                         if (logs.length == 0) {
-                            source.sendFeedback(new LiteralText("No logs available!"), false);
+                            source.sendFeedback(Text.literal("No logs available!"), false);
                             return 0;
                         }
 
-                        LiteralText feedback = new LiteralText("Available Logs:");
+                        MutableText feedback = Text.literal("Available Logs:");
                         for (String log : logs) {
                             Style s = Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/mclogs share " + log));
-                            LiteralText tempText = new LiteralText("\n" + log);
+                            MutableText tempText = Text.literal("\n" + log);
                             tempText.setStyle(s);
                             feedback.append(tempText);
                         }
@@ -36,8 +34,7 @@ public class CommandMclogsList {
                     catch (Exception e) {
                         MclogsFabricLoader.logger.error("An error occurred when listing your logs.");
                         MclogsFabricLoader.logger.error(e);
-                        LiteralText error = new LiteralText("An error occurred. Check your log for more details.");
-                        source.sendError(error);
+                        source.sendError(Text.literal("An error occurred. Check your log for more details."));
                         return -1;
                     }
                 })
