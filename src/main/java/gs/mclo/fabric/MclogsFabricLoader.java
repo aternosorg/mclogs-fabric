@@ -4,7 +4,7 @@ import com.mojang.brigadier.context.CommandContext;
 import gs.mclo.java.APIResponse;
 import gs.mclo.java.MclogsAPI;
 import net.fabricmc.api.DedicatedServerModInitializer;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.server.command.ServerCommandSource;
@@ -17,7 +17,6 @@ import org.apache.logging.log4j.Logger;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Optional;
 
 public class MclogsFabricLoader implements DedicatedServerModInitializer {
@@ -80,7 +79,7 @@ public class MclogsFabricLoader implements DedicatedServerModInitializer {
         Optional<ModContainer> mclogs = FabricLoader.getInstance().getModContainer("mclogs");
         MclogsAPI.version = mclogs.isPresent() ? mclogs.get().getMetadata().getVersion().getFriendlyString() : "unknown";
 
-        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, dedicated) -> {
             CommandMclogs.register(dispatcher);
             CommandMclogsList.register(dispatcher);
             CommandMclogsShare.register(dispatcher);
