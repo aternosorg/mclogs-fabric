@@ -1,6 +1,12 @@
 plugins {
 	id 'java'
-	id 'fabric-loom' version '0.12-SNAPSHOT'
+	id 'fabric-loom' version '1.0-SNAPSHOT'
+	id "com.modrinth.minotaur" version "2.+"
+	id 'com.matthewprenger.cursegradle' version '1.4.0'
+}
+
+if (project.hasProperty('release')) {
+	project.mod_version = project.getProperty('release')
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -9,26 +15,27 @@ targetCompatibility = JavaVersion.VERSION_1_8
 archivesBaseName = project.archives_base_name
 version = "${project.mod_version}-for-${project.mod_minecraft_version}"
 group = project.maven_group
+changelog = rootProject.file("CHANGELOG.md").text
 
 dependencies {
 	// Mclogs Java - Library to read, list and share logs to mclogs
 	implementation project(path: ":mclogs-java", configuration: 'default')
+	include project(path: ":mclogs-java", configuration: 'default')
 
 	//to change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-	include project(path: ":mclogs-java", configuration: 'default')
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 }
 
 processResources {
-	inputs.property "version", project.version
+	inputs.property "version", project.mod_version
 
 	filesMatching("fabric.mod.json") {
-		expand "version": project.version
+		expand "version": project.mod_version
 	}
 }
 
@@ -44,5 +51,45 @@ jar {
 }
 
 loom {
-	serverOnlyMinecraftJar()
+	// serverOnlyMinecraftJar()
+	// This produces a compilation error at the moment
+}
+
+modrinth {
+	token = System.getenv("MODRINTH_TOKEN")
+	projectId = "6DdCzpTL"
+	uploadFile = "./build/libs/mclogs-fabric-${project.version}.jar"
+	gameVersions = [
+			"1.16.5",
+			"1.16.4",
+			"1.16.3",
+			"1.16.2",
+			"1.16.1",
+			"1.16",
+	]
+	changelog = rootProject.changelog
+}
+
+curseforge {
+	apiKey = System.getenv("CURSEFORGE_TOKEN") ?: ''
+	project {
+		id = '420561'
+		changelogType = 'markdown'
+		changelog = rootProject.changelog
+		releaseType = 'release'
+		addGameVersion 'Fabric'
+		addGameVersion "Java ${JavaVersion.current().majorVersion}"
+		relations {
+			requiredDependency 'fabric-api'
+		}
+		afterEvaluate {
+			mainArtifact(remapJar) {
+				displayName = "Mclogs ${project.mod_version} for Minecraft ${project.mod_minecraft_version}"
+				uploadTask.dependsOn(remapJar)
+			}
+		}
+	}
+	options {
+		forgeGradleIntegration = false
+	}
 }

@@ -1,0 +1,20 @@
+name: Build
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: |
+            8
+            17
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: init submodule
+        run: git submodule init && git submodule update
+      - name: Build with Gradle
+        run: JAVA_HOME="$JAVA_HOME_8_x64" ./gradlew build -Dorg.gradle.java.home="$JAVA_HOME_17_x64"
