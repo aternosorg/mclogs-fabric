@@ -57,9 +57,11 @@ modrinth {
 	projectId = "6DdCzpTL"
 	uploadFile = "./build/libs/mclogs-fabric-${project.version}.jar"
 	gameVersions = [
-			"1.19.2",
-			"1.19.1",
-			"1.19",
+			"22w46a",
+			"22w45a",
+			"22w44a",
+			"22w43a",
+			"22w42a",
 	]
 	changelog = rootProject.changelog
 	dependencies {
