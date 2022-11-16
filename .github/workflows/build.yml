@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set up JDK 1.8
+      - name: Set up Java
         uses: actions/setup-java@v3
         with:
           distribution: temurin
@@ -17,4 +17,4 @@ jobs:
       - name: init submodule
         run: git submodule init && git submodule update
       - name: Build with Gradle
-        run: ./gradlew build -Dorg.gradle.java.home="$JAVA_HOME_17"
+        run: ./gradlew build -Dorg.gradle.java.home="$JAVA_HOME_17_X64"
