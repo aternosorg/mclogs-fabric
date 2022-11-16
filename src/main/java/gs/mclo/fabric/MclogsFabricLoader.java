@@ -2,6 +2,7 @@ package gs.mclo.fabric;
 
 import com.mojang.brigadier.context.CommandContext;
 import gs.mclo.java.APIResponse;
+import gs.mclo.java.Log;
 import gs.mclo.java.MclogsAPI;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -31,16 +32,45 @@ public class MclogsFabricLoader implements DedicatedServerModInitializer {
         return MclogsAPI.listLogs(context.getSource().getServer().getRunDirectory().getCanonicalPath());
     }
 
+    /**
+     * @param context command context
+     * @return crash reports
+     * @throws IOException io exception
+     */
+    public static String[] getCrashReports(CommandContext<ServerCommandSource> context) throws IOException {
+        return MclogsAPI.listCrashReports(context.getSource().getServer().getRunDirectory().getCanonicalPath());
+    }
+
     public static int share(ServerCommandSource source, String filename) {
         MclogsAPI.mcversion = source.getServer().getVersion();
         logger.log(Level.INFO,"Sharing "+filename);
         source.sendFeedback(Text.literal("Sharing " + filename), false);
+
+        Path directory = source.getServer().getRunDirectory().toPath();
+        Path logs = directory.resolve("logs");
+        Path crashReports = directory.resolve("crash-reports");
+        Path log = directory.resolve("logs").resolve(filename);
+
+        if (!log.toFile().exists()) {
+            log = directory.resolve("crash-reports").resolve(filename);
+        }
+
+        boolean isInAllowedDirectory = false;
         try {
-            Path logs = source.getServer().getFile("logs/").toPath();
-            Path log = logs.resolve(filename);
-            if (!log.getParent().equals(logs)) {
-                throw new FileNotFoundException();
-            }
+            Path logPath = log.toRealPath();
+            isInAllowedDirectory = (logs.toFile().exists() && logPath.startsWith(logs.toRealPath()))
+                    || (crashReports.toFile().exists() && logPath.startsWith(crashReports.toRealPath()));
+        }
+        catch (IOException ignored) {}
+
+        if (!log.toFile().exists() || !isInAllowedDirectory
+                || !log.getFileName().toString().matches(Log.ALLOWED_FILE_NAME_PATTERN.pattern())) {
+            source.sendError(Text.literal("There is no log or crash report with the name '" + filename
+                    + "'. Use '/mclogs list' to list all logs."));
+            return -1;
+        }
+
+        try {
             APIResponse response = MclogsAPI.share(log);
             if (response.success) {
                 MutableText feedback = Text.literal("Your log has been uploaded: ");
