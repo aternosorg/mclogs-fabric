@@ -35,4 +35,4 @@ jobs:
       - name: Publish to CurseForge
         env:
           CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
-        run: JAVA_HOME="$JAVA_HOME_8_X64" ./gradlew curseforge -Dorg.gradle.java.home="$JAVA_HOME_17_X64" -Prelease=${{  github.ref_name }}
+        run: JAVA_HOME="$JAVA_HOME_8_X64" ./gradlew publishCurseforge -Dorg.gradle.java.home="$JAVA_HOME_17_X64" -Prelease=${{  github.ref_name }}
