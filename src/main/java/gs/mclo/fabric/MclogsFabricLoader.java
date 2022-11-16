@@ -31,7 +31,7 @@ public class MclogsFabricLoader implements DedicatedServerModInitializer {
      * @throws IOException io exception
      */
     public static String[] getLogs(CommandContext<ServerCommandSource> context) throws IOException {
-        return MclogsAPI.listLogs(context.getSource().getMinecraftServer().getRunDirectory().getCanonicalPath());
+        return MclogsAPI.listLogs(context.getSource().getServer().getRunDirectory().getCanonicalPath());
     }
 
     /**
@@ -40,15 +40,15 @@ public class MclogsFabricLoader implements DedicatedServerModInitializer {
      * @throws IOException io exception
      */
     public static String[] getCrashReports(CommandContext<ServerCommandSource> context) throws IOException {
-        return MclogsAPI.listCrashReports(context.getSource().getMinecraftServer().getRunDirectory().getCanonicalPath());
+        return MclogsAPI.listCrashReports(context.getSource().getServer().getRunDirectory().getCanonicalPath());
     }
 
     public static int share(ServerCommandSource source, String filename) {
-        MclogsAPI.mcversion = source.getMinecraftServer().getVersion();
+        MclogsAPI.mcversion = source.getServer().getVersion();
         logger.log(Level.INFO,"Sharing "+filename);
         source.sendFeedback(new LiteralText("Sharing " + filename), false);
 
-        Path directory = source.getMinecraftServer().getRunDirectory().toPath();
+        Path directory = source.getServer().getRunDirectory().toPath();
         Path logs = directory.resolve("logs");
         Path crashReports = directory.resolve("crash-reports");
         Path log = directory.resolve("logs").resolve(filename);
