@@ -28,24 +28,26 @@ public class CommandMclogsShare {
 
     private static CompletableFuture<Suggestions> suggest(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) {
         ImmutableList.Builder<Suggestion> suggestions = ImmutableList.builder();
-        String[] logs;
+        String[] logs, reports;
         try {
             logs = MclogsFabricLoader.getLogs(context);
+            reports = MclogsFabricLoader.getCrashReports(context);
         } catch (IOException e) {
             MclogsFabricLoader.logger.error("Failed to suggest log files", e);
             return Suggestions.empty();
         }
 
-        String input = context.getInput();
-        String[] args = input.split(" ");
-        if (args.length > 3) return Suggestions.empty();
-
-        String partialLogName = args.length == 3 ? args[2] : "";
+        String argument = context.getArgument("filename", String.class);
         int start = "/mclogs share ".length();
 
         for (String log: logs) {
-            if (!log.startsWith(partialLogName)) continue;
-            suggestions.add(new Suggestion(StringRange.between(start, input.length()), log));
+            if (!log.startsWith(argument)) continue;
+            suggestions.add(new Suggestion(StringRange.between(start, context.getInput().length()), log));
+        }
+
+        for (String report: reports) {
+            if (!report.startsWith(argument)) continue;
+            suggestions.add(new Suggestion(StringRange.between(start, context.getInput().length()), report));
         }
 
         return CompletableFuture.completedFuture(Suggestions.create("mclogs", suggestions.build()));
