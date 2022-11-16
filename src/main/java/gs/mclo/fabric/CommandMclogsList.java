@@ -4,7 +4,9 @@ import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
+import net.minecraft.util.Formatting;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
@@ -16,22 +18,47 @@ public class CommandMclogsList {
                     ServerCommandSource source = context.getSource();
 
                     try {
-                        String[] logs = MclogsFabricLoader.getLogs(context);
+                        int total = 0;
 
-                        if (logs.length == 0) {
-                            source.sendFeedback(new LiteralText("No logs available!"), false);
-                            return 0;
+                        MutableText message = new LiteralText("");
+
+                        message.append(new LiteralText("Available logs:")
+                            .setStyle(Style.EMPTY
+                                .withColor(Formatting.GREEN)
+                                .withBold(true)
+                            ));
+                        for (String log : MclogsFabricLoader.getLogs(context)) {
+                            MutableText tempText = new LiteralText("\n" + log)
+                                .setStyle(
+                                    Style.EMPTY
+                                    .withClickEvent(
+                                        new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/mclogs share " + log)
+                                    )
+                                );
+                            message.append(tempText);
+                            total ++;
                         }
 
-                        LiteralText feedback = new LiteralText("Available Logs:");
-                        for (String log : logs) {
-                            Style s = Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/mclogs share " + log));
-                            LiteralText tempText = new LiteralText("\n" + log);
-                            tempText.setStyle(s);
-                            feedback.append(tempText);
+                        message.append(new LiteralText("\nAvailable crash reports:")
+                                .setStyle(Style.EMPTY
+                                        .withColor(Formatting.GREEN)
+                                        .withBold(true)
+                                ));
+                        for (String report : MclogsFabricLoader.getCrashReports(context)) {
+                            MutableText tempText = new LiteralText("\n" + report)
+                                .setStyle(
+                                    Style.EMPTY
+                                    .withClickEvent(
+                                        new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/mclogs share " + report)
+                                    )
+                                );
+                            message.append(tempText);
+                            total ++;
                         }
-                        source.sendFeedback(feedback, false);
-                        return logs.length;
+
+
+                        source.sendFeedback(message, false);
+                        return total;
                     }
                     catch (Exception e) {
                         MclogsFabricLoader.logger.error("An error occurred when listing your logs.");
