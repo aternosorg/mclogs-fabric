@@ -1,0 +1,1 @@
+- Allow sharing of crash reports
