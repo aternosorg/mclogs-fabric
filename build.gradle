@@ -2,7 +2,7 @@ plugins {
 	id 'java'
 	id 'fabric-loom' version '1.0-SNAPSHOT'
 	id "com.modrinth.minotaur" version "2.+"
-	id 'com.matthewprenger.cursegradle' version '1.4.0'
+	id "net.darkhax.curseforgegradle" version "1.0.11"
 }
 
 if (project.hasProperty('release')) {
@@ -70,26 +70,12 @@ modrinth {
 	changelog = rootProject.changelog
 }
 
-curseforge {
-	apiKey = System.getenv("CURSEFORGE_TOKEN") ?: ''
-	project {
-		id = '420561'
-		changelogType = 'markdown'
-		changelog = rootProject.changelog
-		releaseType = 'release'
-		addGameVersion 'Fabric'
-		addGameVersion "Java ${JavaVersion.current().majorVersion}"
-		relations {
-			requiredDependency 'fabric-api'
-		}
-		afterEvaluate {
-			mainArtifact(remapJar) {
-				displayName = "Mclogs ${project.mod_version} for Minecraft ${project.mod_minecraft_version}"
-				uploadTask.dependsOn(remapJar)
-			}
-		}
-	}
-	options {
-		forgeGradleIntegration = false
-	}
+task publishCurseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+	apiToken = System.getenv("CURSEFORGE_TOKEN") ?: ''
+	def mainFile = upload(420561, "./build/libs/mclogs-fabric-${project.version}.jar")
+	mainFile.releaseType = 'release'
+	mainFile.changelogType = 'markdown'
+	mainFile.changelog = rootProject.changelog
+	mainFile.addRequirement('fabric-api')
+	mainFile.addJavaVersion("Java ${JavaVersion.current().majorVersion}")
 }
