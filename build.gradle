@@ -5,15 +5,11 @@ plugins {
 	id "net.darkhax.curseforgegradle" version "1.0.11"
 }
 
-if (project.hasProperty('release')) {
-	project.mod_version = project.getProperty('release')
-}
-
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 archivesBaseName = project.archives_base_name
-version = "${project.mod_version}-for-${project.mod_minecraft_version}"
+version = project.hasProperty('release') ? project.getProperty('release') : 'dev'
 group = project.maven_group
 changelog = rootProject.file("CHANGELOG.md").text
 
@@ -32,10 +28,11 @@ dependencies {
 }
 
 processResources {
-	inputs.property "version", project.mod_version
+	def tag_version = project.version.split('-')[0];
+	inputs.property "version", tag_version
 
 	filesMatching("fabric.mod.json") {
-		expand "version": project.mod_version
+		expand "version": tag_version
 	}
 }
 
