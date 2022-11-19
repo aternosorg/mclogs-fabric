@@ -75,7 +75,6 @@ task publishCurseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
 	mainFile.changelog = rootProject.changelog
 	mainFile.addRequirement('fabric-api')
 	mainFile.addJavaVersion("Java ${JavaVersion.current().majorVersion}")
-	mainFile.addGameVersion("1.17.2")
 	mainFile.addGameVersion("1.17.1")
 	mainFile.addGameVersion("1.17")
 }
