@@ -28,7 +28,7 @@ dependencies {
 }
 
 processResources {
-	def tag_version = project.version.split('-')[0];
+	def tag_version = project.version.split('-')[0]
 	inputs.property "version", tag_version
 
 	filesMatching("fabric.mod.json") {
@@ -68,6 +68,7 @@ modrinth {
 	changelog = rootProject.changelog
 	dependencies {
 		required.project "fabric-api"
+		required.project "qsl"
 	}
 }
 
@@ -78,7 +79,8 @@ task publishCurseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
 	mainFile.changelogType = 'markdown'
 	mainFile.changelog = rootProject.changelog
 	mainFile.addModLoader("Quilt")
-	mainFile.addRequirement('fabric-api')
+	mainFile.addRequirement("fabric-api")
+	mainFile.addRequirement("qsl")
 	mainFile.addJavaVersion("Java ${JavaVersion.current().majorVersion}")
 	mainFile.addGameVersion("1.16.5")
 	mainFile.addGameVersion("1.16.4")
