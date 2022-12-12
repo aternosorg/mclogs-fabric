@@ -6,7 +6,7 @@ like IP addresses are automatically hidden to ensure safety and privacy.
 
 ### Downloads
 - [GitHub Releases](https://github.com/aternosorg/mclogs-fabric/releases)
-- [CurseForge](https://www.curseforge.com/minecraft/mc-mods/mc-logs)
+- [CurseForge](https://www.curseforge.com/minecraft/mc-mods/mclo-gs)
 - [Modrinth](https://modrinth.com/mod/mclogs)
 
 ### Commands
