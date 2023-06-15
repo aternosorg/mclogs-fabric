@@ -47,7 +47,7 @@ public class MclogsFabricLoader implements DedicatedServerModInitializer {
     public static int share(ServerCommandSource source, String filename) {
         client.setMinecraftVersion(source.getServer().getVersion());
         logger.log(Level.INFO,"Sharing "+filename);
-        source.sendFeedback(Text.literal("Sharing " + filename), false);
+        source.sendFeedback(() -> Text.literal("Sharing " + filename), false);
 
         Path directory = source.getServer().getRunDirectory().toPath();
         Path logs = directory.resolve("logs");
@@ -86,7 +86,7 @@ public class MclogsFabricLoader implements DedicatedServerModInitializer {
                 linkStyle = linkStyle.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,res.getUrl()));
                 link.setStyle(linkStyle);
 
-                source.sendFeedback(feedback.append(link),true);
+                source.sendFeedback(() -> feedback.append(link),true);
                 return 1;
             }
             else {

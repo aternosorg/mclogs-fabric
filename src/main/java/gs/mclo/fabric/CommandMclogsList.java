@@ -52,8 +52,7 @@ public class CommandMclogsList {
                             total ++;
                         }
 
-
-                        source.sendFeedback(message, false);
+                        source.sendFeedback(() -> message, false);
                         return total;
                     }
                     catch (Exception e) {
