@@ -34,11 +34,7 @@ public class MclogsFabricLoader implements DedicatedServerModInitializer {
      * @throws IOException io exception
      */
     public static String[] getLogs(CommandContext<ServerCommandSource> context) throws IOException {
-<<<<<<< HEAD
-        return MclogsAPI.listLogs(context.getSource().getServer().getRunDirectory().getCanonicalPath());
-=======
-        return client.listLogsInDirectory(context.getSource().getMinecraftServer().getRunDirectory().getCanonicalPath());
->>>>>>> master
+        return client.listLogsInDirectory(context.getSource().getServer().getRunDirectory().getCanonicalPath());
     }
 
     /**
@@ -47,19 +43,11 @@ public class MclogsFabricLoader implements DedicatedServerModInitializer {
      * @throws IOException io exception
      */
     public static String[] getCrashReports(CommandContext<ServerCommandSource> context) throws IOException {
-<<<<<<< HEAD
-        return MclogsAPI.listCrashReports(context.getSource().getServer().getRunDirectory().getCanonicalPath());
+        return client.listCrashReportsInDirectory(context.getSource().getServer().getRunDirectory().getCanonicalPath());
     }
 
     public static int share(ServerCommandSource source, String filename) {
-        MclogsAPI.mcversion = source.getServer().getVersion();
-=======
-        return client.listCrashReportsInDirectory(context.getSource().getMinecraftServer().getRunDirectory().getCanonicalPath());
-    }
-
-    public static int share(ServerCommandSource source, String filename) {
-        client.setMinecraftVersion(source.getMinecraftServer().getVersion());
->>>>>>> master
+        client.setMinecraftVersion(source.getServer().getVersion());
         logger.log(Level.INFO,"Sharing "+filename);
         source.sendFeedback(new LiteralText("Sharing " + filename), false);
 
