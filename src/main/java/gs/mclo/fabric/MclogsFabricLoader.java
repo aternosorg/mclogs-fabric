@@ -1,9 +1,9 @@
 package gs.mclo.fabric;
 
 import com.mojang.brigadier.context.CommandContext;
-import gs.mclo.java.APIResponse;
-import gs.mclo.java.Log;
-import gs.mclo.java.MclogsAPI;
+import gs.mclo.api.Log;
+import gs.mclo.api.MclogsClient;
+import gs.mclo.api.response.UploadLogResponse;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
@@ -19,9 +19,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class MclogsFabricLoader implements DedicatedServerModInitializer {
     public static final Logger logger = LogManager.getLogger();
+    private static final MclogsClient client = new MclogsClient("Mclogs-fabric");
 
     /**
      * @param context command context
@@ -29,7 +32,7 @@ public class MclogsFabricLoader implements DedicatedServerModInitializer {
      * @throws IOException io exception
      */
     public static String[] getLogs(CommandContext<ServerCommandSource> context) throws IOException {
-        return MclogsAPI.listLogs(context.getSource().getServer().getRunDirectory().getCanonicalPath());
+        return client.listLogsInDirectory(context.getSource().getServer().getRunDirectory().getCanonicalPath());
     }
 
     /**
@@ -38,11 +41,11 @@ public class MclogsFabricLoader implements DedicatedServerModInitializer {
      * @throws IOException io exception
      */
     public static String[] getCrashReports(CommandContext<ServerCommandSource> context) throws IOException {
-        return MclogsAPI.listCrashReports(context.getSource().getServer().getRunDirectory().getCanonicalPath());
+        return client.listCrashReportsInDirectory(context.getSource().getServer().getRunDirectory().getCanonicalPath());
     }
 
     public static int share(ServerCommandSource source, String filename) {
-        MclogsAPI.mcversion = source.getServer().getVersion();
+        client.setMinecraftVersion(source.getServer().getVersion());
         logger.log(Level.INFO,"Sharing "+filename);
         source.sendFeedback(Text.literal("Sharing " + filename), false);
 
@@ -71,14 +74,16 @@ public class MclogsFabricLoader implements DedicatedServerModInitializer {
         }
 
         try {
-            APIResponse response = MclogsAPI.share(log);
-            if (response.success) {
+            CompletableFuture<UploadLogResponse> response = client.uploadLog(log);
+            UploadLogResponse res = response.get();
+            res.setClient(client);
+            if (res.isSuccess()) {
                 MutableText feedback = Text.literal("Your log has been uploaded: ");
                 feedback.setStyle(Style.EMPTY.withColor(Formatting.GREEN));
 
-                MutableText link = Text.literal(response.url);
+                MutableText link = Text.literal(res.getUrl());
                 Style linkStyle = Style.EMPTY.withColor(Formatting.BLUE);
-                linkStyle = linkStyle.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,response.url));
+                linkStyle = linkStyle.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,res.getUrl()));
                 link.setStyle(linkStyle);
 
                 source.sendFeedback(feedback.append(link),true);
@@ -86,7 +91,7 @@ public class MclogsFabricLoader implements DedicatedServerModInitializer {
             }
             else {
                 logger.error("An error occurred when uploading your log: ");
-                logger.error(response.error);
+                logger.error(res.getError());
                 source.sendError(Text.literal("An error occurred. Check your log for more details"));
                 return 0;
             }
@@ -95,7 +100,7 @@ public class MclogsFabricLoader implements DedicatedServerModInitializer {
             source.sendError(Text.literal("The log file "+filename+" doesn't exist. Use '/mclogs list' to list all logs."));
             return -1;
         }
-        catch (IOException e) {
+        catch (IOException | InterruptedException | ExecutionException e) {
             source.sendError(Text.literal("An error occurred. Check your log for more details"));
             logger.error("Could not get log file!");
             logger.error(e);
@@ -105,10 +110,9 @@ public class MclogsFabricLoader implements DedicatedServerModInitializer {
 
     @Override
     public void onInitializeServer() {
-        MclogsAPI.userAgent = "Mclogs-fabric";
         Optional<ModContainer> mclogs = FabricLoader.getInstance().getModContainer("mclogs");
-        MclogsAPI.version = mclogs.isPresent() ? mclogs.get().getMetadata().getVersion().getFriendlyString() : "unknown";
 
+        client.setProjectVersion(mclogs.isPresent() ? mclogs.get().getMetadata().getVersion().getFriendlyString() : "unknown");
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, dedicated) -> {
             CommandMclogs.register(dispatcher);
             CommandMclogsList.register(dispatcher);
