@@ -11,9 +11,10 @@ jobs:
         with:
           distribution: temurin
           java-version: |
-            11
             17
+            11
+          cache: 'gradle'
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: JAVA_HOME="$JAVA_HOME_11_X64" ./gradlew build -Dorg.gradle.java.home="$JAVA_HOME_17_X64"
+        run: ./gradlew build --no-daemon -Dorg.gradle.java.home="$JAVA_HOME_17_X64"
