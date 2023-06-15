@@ -4,17 +4,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - uses: gradle/wrapper-validation-action@v1
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: |
             17
-            8
+            11
+          cache: 'gradle'
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - name: init submodule
-        run: git submodule init && git submodule update
       - name: Build with Gradle
-        run: ./gradlew build -Dorg.gradle.java.home="$JAVA_HOME_17_X64"
+        run: ./gradlew build --no-daemon -Dorg.gradle.java.home="$JAVA_HOME_17_X64"
