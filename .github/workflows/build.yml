@@ -10,10 +10,10 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: 11
+          java-version: |
+            11
+            17
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - name: init submodule
-        run: git submodule init && git submodule update
       - name: Build with Gradle
-        run: ./gradlew shadowJar
+        run: JAVA_HOME="$JAVA_HOME_11_X64" ./gradlew build -Dorg.gradle.java.home="$JAVA_HOME_17_X64"

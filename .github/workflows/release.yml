@@ -13,13 +13,13 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: 11
+          java-version: |
+            11
+            17
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - name: init submodule
-        run: git submodule init && git submodule update
       - name: Build with Gradle
-        run: JAVA_HOME="$JAVA_HOME_8_X64" ./gradlew build -Dorg.gradle.java.home="$JAVA_HOME_17_X64" -Prelease=${{  github.ref_name }}
+        run: JAVA_HOME="$JAVA_HOME_11_X64" ./gradlew build -Dorg.gradle.java.home="$JAVA_HOME_17_X64" -Prelease=${{  github.ref_name }}
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
@@ -30,8 +30,8 @@ jobs:
       - name: Publish to Modrinth
         env:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
-        run: JAVA_HOME="$JAVA_HOME_8_X64" ./gradlew modrinth -Dorg.gradle.java.home="$JAVA_HOME_17_X64" -Prelease=${{  github.ref_name }}
+        run: JAVA_HOME="$JAVA_HOME_11_X64" ./gradlew modrinth -Dorg.gradle.java.home="$JAVA_HOME_17_X64" -Prelease=${{  github.ref_name }}
       - name: Publish to CurseForge
         env:
           CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
-        run: JAVA_HOME="$JAVA_HOME_8_X64" ./gradlew publishCurseforge -Dorg.gradle.java.home="$JAVA_HOME_17_X64" -Prelease=${{  github.ref_name }}
+        run: JAVA_HOME="$JAVA_HOME_11_X64" ./gradlew publishCurseforge -Dorg.gradle.java.home="$JAVA_HOME_17_X64" -Prelease=${{  github.ref_name }}
