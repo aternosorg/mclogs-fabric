@@ -1,1 +1,1 @@
-- Allow sharing of crash reports
+- Makes use of API version 4.0.0, allowing for marginal performance increases as API calls are now Async
