@@ -1,8 +1,8 @@
 plugins {
 	id 'java'
-	id 'fabric-loom' version '1.0-SNAPSHOT'
-	id "com.modrinth.minotaur" version "2.+"
-	id "net.darkhax.curseforgegradle" version "1.0.11"
+	id 'fabric-loom' version '1.2.7'
+	id "com.modrinth.minotaur" version "2.8.1"
+	id "net.darkhax.curseforgegradle" version "1.1.15"
 }
 
 sourceCompatibility = JavaVersion.VERSION_16
@@ -15,8 +15,8 @@ changelog = rootProject.file("CHANGELOG.md").text
 
 dependencies {
 	// Mclogs Java - Library to read, list and share logs to mclogs
-	implementation project(path: ":mclogs-java", configuration: 'default')
-	include project(path: ":mclogs-java", configuration: 'default')
+	implementation 'gs.mclo:api:4.0.1'
+	include 'gs.mclo:api:4.0.1'
 
 	//to change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -28,7 +28,7 @@ dependencies {
 }
 
 processResources {
-	def tag_version = project.version.split('-')[0];
+	def tag_version = project.version.split('-')[0]
 	inputs.property "version", tag_version
 
 	filesMatching("fabric.mod.json") {
@@ -57,6 +57,7 @@ modrinth {
 	token = System.getenv("MODRINTH_TOKEN")
 	projectId = "6DdCzpTL"
 	uploadFile = "./build/libs/mclogs-fabric-${project.version}.jar"
+	loaders = ["fabric", "quilt"]
 	gameVersions = [
 			"1.17.1",
 			"1.17",
@@ -64,6 +65,7 @@ modrinth {
 	changelog = rootProject.changelog
 	dependencies {
 		required.project "fabric-api"
+		required.project "qsl"
 	}
 }
 
@@ -73,7 +75,9 @@ task publishCurseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
 	mainFile.releaseType = 'release'
 	mainFile.changelogType = 'markdown'
 	mainFile.changelog = rootProject.changelog
-	mainFile.addRequirement('fabric-api')
+	mainFile.addModLoader("Quilt")
+	mainFile.addRequirement("fabric-api")
+	mainFile.addRequirement("qsl")
 	mainFile.addJavaVersion("Java ${JavaVersion.current().majorVersion}")
 	mainFile.addGameVersion("1.17.1")
 	mainFile.addGameVersion("1.17")
