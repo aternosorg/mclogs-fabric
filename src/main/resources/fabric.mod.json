@@ -20,10 +20,16 @@
   "license": "MIT",
   "icon": "assets/mclogs/logo.png",
 
-  "environment": "server",
+  "environment": "*",
   "entrypoints": {
+    "main": [
+      "gs.mclo.fabric.MclogsFabric"
+    ],
     "server": [
-      "gs.mclo.fabric.MclogsFabricLoader"
+      "gs.mclo.fabric.MclogsFabric"
+    ],
+    "client": [
+      "gs.mclo.fabric.MclogsFabric"
     ]
   },
   "depends": {
