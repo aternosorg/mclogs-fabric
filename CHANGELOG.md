@@ -1,1 +1,1 @@
-- Makes use of API version 4.0.0, allowing for marginal performance increases as API calls are now Async
+- Add client side command /mclogsc
