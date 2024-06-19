@@ -29,6 +29,6 @@ public class ServerSource implements Source {
 
     @Override
     public Path getRunDirectory() {
-        return parent.getServer().getRunDirectory().toPath();
+        return parent.getServer().getRunDirectory();
     }
 }

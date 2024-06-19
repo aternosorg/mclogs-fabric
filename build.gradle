@@ -59,13 +59,7 @@ modrinth {
 	uploadFile = "./build/libs/mclogs-fabric-${project.version}.jar"
 	loaders = ["fabric", "quilt"]
 	gameVersions = [
-			"1.20.6",
-			"1.20.5",
-			"1.20.4",
-			"1.20.3",
-			"1.20.2",
-			"1.20.1",
-			"1.20",
+			"1.21",
 	]
 	changelog = rootProject.changelog
 	dependencies {
@@ -84,11 +78,5 @@ task publishCurseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
 	mainFile.addRequirement("fabric-api")
 	mainFile.addRequirement("qsl")
 	mainFile.addJavaVersion("Java ${JavaVersion.current().majorVersion}")
-	mainFile.addGameVersion("1.20.6")
-	mainFile.addGameVersion("1.20.5")
-	mainFile.addGameVersion("1.20.4")
-	mainFile.addGameVersion("1.20.3")
-	mainFile.addGameVersion("1.20.2")
-	mainFile.addGameVersion("1.20.1")
-	mainFile.addGameVersion("1.20")
+	mainFile.addGameVersion("1.21")
 }
