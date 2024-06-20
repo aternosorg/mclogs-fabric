@@ -19,7 +19,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: ./gradlew build --no-daemon -Dorg.gradle.java.home="$JAVA_HOME_17_X64" -Prelease=${{  github.ref_name }}
+        run: ./gradlew build --no-daemon -Dorg.gradle.java.home="$JAVA_HOME_21_X64" -Prelease=${{  github.ref_name }}
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
@@ -30,8 +30,8 @@ jobs:
       - name: Publish to Modrinth
         env:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
-        run: ./gradlew modrinth --no-daemon -Dorg.gradle.java.home="$JAVA_HOME_17_X64" -Prelease=${{  github.ref_name }}
+        run: ./gradlew modrinth --no-daemon -Dorg.gradle.java.home="$JAVA_HOME_21_X64" -Prelease=${{  github.ref_name }}
       - name: Publish to CurseForge
         env:
           CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
-        run: ./gradlew publishCurseforge --no-daemon -Dorg.gradle.java.home="$JAVA_HOME_17_X64" -Prelease=${{  github.ref_name }}
+        run: ./gradlew publishCurseforge --no-daemon -Dorg.gradle.java.home="$JAVA_HOME_21_X64" -Prelease=${{  github.ref_name }}
