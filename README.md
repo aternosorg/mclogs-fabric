@@ -1,5 +1,9 @@
 ![logo](https://mclo.gs/img/logo.png)
 
+> [!WARNING]  
+> All variants of this mod/plugin have merged into the [mclogs-integration](https://github.com/aternosorg/mclogs-integration) repository.
+> This repository is no longer maintained and only remains as an archive.
+
 With this mod, you can upload your Minecraft server log to [mclogs](https://mclo.gs) directly from your server
 with one simple command. It's even possible to export old server log files, e.g. after a crash. Critical information
 like IP addresses are automatically hidden to ensure safety and privacy.
